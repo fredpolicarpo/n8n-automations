@@ -1,0 +1,1260 @@
+{
+  "name": "PJ Assistent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1480,
+        -140
+      ],
+      "id": "e19c4be4-677a-4d90-acfd-f429c28761aa",
+      "name": "Telegram Trigger",
+      "webhookId": "85244450-329e-4180-a71a-fea56de43401",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f7a6a198-7ed2-4856-9cf1-e4d095104351",
+              "leftValue": "={{ $json.message.document.mime_type }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1180,
+        -560
+      ],
+      "id": "ebebd74e-523c-469e-a81d-c0b0691f7e69",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "keepSource": "binary"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -580
+      ],
+      "id": "a650a347-3bec-44f4-b21c-a673356e3035",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -780
+      ],
+      "id": "d294c70f-9c93-4268-b756-4703c5afb320",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "K9UaYbRUTY4MsN3x",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "326607b1-a3b5-40d4-aa2c-7f3c770b5b7b",
+              "name": "expenses",
+              "value": "={{ JSON.parse($json.text) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        380,
+        -960
+      ],
+      "id": "2bb72d28-1b4d-41bd-8d36-61c9e0141aa1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Boa 💰\nVejo que em {{$json.expenses.find(it => it.due_date).due_date_value}} você teve os seguintes recebimentos:\n\n{{ $json.expenses.map(item => item.expense ? ` 💵 ${item.expense}: US$ ${item.amount}` : (item.total ? ` 💵 Total: US$ ${item.total}`: '')).join('\\n') }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -960
+      ],
+      "id": "8a828d4d-fcd8-4388-adf1-81562306ac34",
+      "name": "Show receives summary",
+      "webhookId": "348f549b-a1ff-4e22-83bb-b91fad21d82a",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "message": "Agora, qual o valor total recebido em BRL na sua conta PJ?",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Total recebido em BRL",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        -960
+      ],
+      "id": "bd7c599f-e085-4fd9-9397-d64e73729c25",
+      "name": "Ask BRL amount",
+      "webhookId": "f3dc2b08-249b-41f1-8e98-6baea3a2bd55",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Ótimo, então a cotação do dolar foi de 🇧🇷 R$ {{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format($json.cotacao_usd_brl);  }}. \nDito isso, deixe-me recalcular as notas em reais....",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1460,
+        -960
+      ],
+      "id": "f4dd81db-11cb-4236-807d-a8e9e989cecb",
+      "name": "Telegram4",
+      "webhookId": "24b3c0fc-48e9-4bd0-b6e3-e252ada213c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5164dbb2-162d-43ae-af0f-ea16d2f9e023",
+              "name": "cotacao_usd_brl",
+              "value": "={{parseFloat($json.data['Total recebido em BRL'] / $('Edit Fields').item.json.expenses.find(it => it.total).total) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        -960
+      ],
+      "id": "c75e70e7-b17e-4c9d-b3bb-e6ec641cb827",
+      "name": "Get Dollar Rate"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Seguem os valores das Notas para o pagamento de {{ $('Edit Fields').item.json.expenses.find(item => item.due_date).due_date_value }}\n\n{{ $json.values_brl.join('\\n') }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1920,
+        -960
+      ],
+      "id": "560eaabc-f710-4d9b-a209-fd86357d5b7f",
+      "name": "Telegram5",
+      "webhookId": "006a61fd-b270-438a-85ed-7d55dbf02552",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Legal, ví que você forneceu o aquivo em PDF, agora vou processa-lo...",
+        "replyMarkup": "=none",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -900,
+        -580
+      ],
+      "id": "680c66ff-298b-4ff2-86fc-32882065ff5d",
+      "name": "Akg PDF",
+      "webhookId": "348f549b-a1ff-4e22-83bb-b91fad21d82a",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da1926fb-a59d-48e8-8b65-dad9a74644de",
+              "name": "values_brl",
+              "value": "={{JSON.stringify($('Edit Fields').item.json.expenses.filter(it => it.expense).map(item => item.expense + ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.amount * $('Get Dollar Rate').item.json.cotacao_usd_brl)))}} ",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1700,
+        -960
+      ],
+      "id": "321681a2-24cf-4dfb-81b0-43a9b6e7fd84",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/valores_notas",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "038b03a5-73c2-4bd5-aada-6a6fc6d79ce7"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4dd83caf-c873-4fff-bbe5-5b5862e47da8",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/upload_notas",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bd854e48-82eb-40c8-9a44-695f85d21096",
+                    "leftValue": "={{ !['/valores_notas', '/upload_notas'].find($json.message.text) }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1260,
+        -140
+      ],
+      "id": "f54c983b-9df7-4555-b955-28f9fe7a68d5",
+      "name": "Switch"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        -960
+      ],
+      "id": "c217e4a4-acc5-46d8-a1ea-917cb2d8e3f6",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.document.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        -580
+      ],
+      "id": "f7a1ba2b-5b42-4387-9e23-592b59fc1f2f",
+      "name": "Get PDF",
+      "webhookId": "323e5ca4-9a8c-4d1a-8efb-b8f269e77e6f",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5f84e84e-689c-48ce-a366-13eb8c9d464a",
+              "leftValue": "={{ $json.info.Title }}",
+              "rightValue": "invoice",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -580
+      ],
+      "id": "b16d71a3-a837-4dfa-94a9-a64f0d4221e3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please extract the date of the invoice. The output must be in the following format {Month-Year}, and must be in pt-BR.\n\nExample: 20/05/2024, output=Maio-2024.\n\nInvoice data:  {{ $json.text }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        -460
+      ],
+      "id": "4e60e845-63df-4ef2-b607-65f0110f3fe1",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -240
+      ],
+      "id": "63404b5d-73c5-4c63-b81e-11f86ef66916",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "K9UaYbRUTY4MsN3x",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Prontinho,o arquivo foi enviado para o diretório PJ/{{ $('Basic LLM Chain1').item.json.text.trim() }} do seu Google Drive!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1560,
+        -620
+      ],
+      "id": "880f5e01-0c95-4868-bf89-2561d913c0a1",
+      "name": "Telegram3",
+      "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Ok, mande os PDFs das notas para que eu faça o upload.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -740,
+        -140
+      ],
+      "id": "56399836-ea69-4823-be40-9456172151e0",
+      "name": "Ask PDF for upload",
+      "webhookId": "828d74a8-21ba-4732-95e1-8764b79762c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Manda o PDF",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -960,
+        -320
+      ],
+      "id": "2a791ecf-1a05-44c7-9fae-4048dfa3cc3e",
+      "name": "Ask PDF for parsing",
+      "webhookId": "a4d8dc0c-7792-42ba-8b33-e4d6eef2ae31",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Olá, escolha uma das oções abaixo:\n/valores\\_notas\n/upload\\_notas",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -980,
+        140
+      ],
+      "id": "f42f27be-dda4-425d-92c5-1b167938394f",
+      "name": "Show options",
+      "webhookId": "e7820461-38c1-4afc-8233-b5a276c72802",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=  Extract the table from:  {{ $json.text }} to a json array. Example of item of the array{\"expense\": \"expense_description\", \"amount\":\"amount_value\"}, please include the total as {\"total\":\"amount\"}. Don't put new line scapes. Don't put the json prefix in the message, just the ready json to be parsed. Additionally, extract the issue due date in another object {\"due_date\", \"due_date_value\"}, and include this last object in the same array. (Translate all text to pt-br)\n\nDetails bout the due_date_value: The input format is 'MM DD, YYYY', the output format I need is 'MM of YYYY', just month and year in the output, and translated to pt-BR. (Exmaple: May 31, 2020 - turns to: Maio de 2020) DONT PUT THE DAY IN THE OUTPUT"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        -960
+      ],
+      "id": "7aff643c-acd1-4a32-88d5-15d2cfd0ede1",
+      "name": "Process Invoice"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.text.trim() }}",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        340,
+        -460
+      ],
+      "id": "96d76716-eb5b-43b4-8ec9-41e715094a66",
+      "name": "Search existing folder",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rzaX31cksKnOiIsm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "057468c9-0adb-4471-91ce-55efd6535ab1",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "={{ $('Basic LLM Chain1').item.json.text.trim() }}",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        540,
+        -460
+      ],
+      "id": "9f891c6a-28a2-4712-82a4-37c978ace335",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $('Basic LLM Chain1').item.json.text.trim() }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1rDpjb7PJ3rjhck8i7hiRiu1yEGsEOLi0",
+          "mode": "list",
+          "cachedResultName": "PJ",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1rDpjb7PJ3rjhck8i7hiRiu1yEGsEOLi0"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        800,
+        -620
+      ],
+      "id": "29115cc6-3fbc-4e46-a78f-5b05a166d9a2",
+      "name": "Create Month Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rzaX31cksKnOiIsm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Get PDF').item.json.result.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1060,
+        -620
+      ],
+      "id": "e704a7b8-51ee-4821-9428-bfd278aed49b",
+      "name": "Read File",
+      "webhookId": "46604a6c-1c8e-4149-9174-8e2adda11003",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "={{ $('If1').item.json.message.document.file_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Month Folder').item.json.id  || $('Search existing folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1300,
+        -620
+      ],
+      "id": "2daa802b-3615-4fc9-8f5a-b2ff85ea050f",
+      "name": "Upoad file",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rzaX31cksKnOiIsm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Prontinho,o arquivo foi enviado para o diretório PJ/{{ $('Basic LLM Chain1').item.json.text.trim() }} do seu Google Drive!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1740,
+        -180
+      ],
+      "id": "50e09ced-654b-49d2-9fe2-8eed4a14cb0c",
+      "name": "Telegram",
+      "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Get PDF').item.json.result.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1260,
+        -180
+      ],
+      "id": "7bbd4820-05f9-4a3a-9f70-4612fcb4ce67",
+      "name": "Read File1",
+      "webhookId": "46604a6c-1c8e-4149-9174-8e2adda11003",
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "={{ $('If1').item.json.message.document.file_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Search existing folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1500,
+        -180
+      ],
+      "id": "cbd0997b-f660-4882-9375-1dea3d4b78a7",
+      "name": "Upoad to existing folder",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rzaX31cksKnOiIsm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $('If1').item.json.message.document.file_name }}",
+        "limit": 1,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        740,
+        -260
+      ],
+      "id": "bf5d53f0-bddc-489d-b4fa-400563da14cb",
+      "name": "Search File",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rzaX31cksKnOiIsm",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "27b4f337-f17c-43b8-a3f7-73eb2b7b5dca",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        -260
+      ],
+      "id": "5a871003-3719-40d4-8d28-dbe06c22821e",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=O arquivo já estava presente no seu Google Drive!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1260,
+        -380
+      ],
+      "id": "0e8e0718-4a24-49fe-b9e6-f3c6fc50bf67",
+      "name": "Arquivo já enviado anteriormente",
+      "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "snfQHYflXj5FuBGM",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Akg PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Process Invoice",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Show receives summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Show receives summary": {
+      "main": [
+        [
+          {
+            "node": "Ask BRL amount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask BRL amount": {
+      "main": [
+        [
+          {
+            "node": "Get Dollar Rate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Dollar Rate": {
+      "main": [
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Akg PDF": {
+      "main": [
+        [
+          {
+            "node": "Get PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Ask PDF for parsing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask PDF for upload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Show options",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram5": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Process Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Search existing folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask PDF for parsing": {
+      "main": [
+        []
+      ]
+    },
+    "Show options": {
+      "main": [
+        []
+      ]
+    },
+    "Process Invoice": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search existing folder": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Create Month Folder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Month Folder": {
+      "main": [
+        [
+          {
+            "node": "Read File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File": {
+      "main": [
+        [
+          {
+            "node": "Upoad file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upoad file": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File1": {
+      "main": [
+        [
+          {
+            "node": "Upoad to existing folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upoad to existing folder": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search File": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Arquivo já enviado anteriormente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a3ff0dcb-3f5b-4320-9a5b-101040ac31c5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb8e473f92ba6bd01b257fc8a12b335e065f87a93d168894cc1dbb59e0596a74"
+  },
+  "id": "zTulPPeWT90L1xWn",
+  "tags": []
+}

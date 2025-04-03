@@ -1,0 +1,1047 @@
+{
+  "name": "Generate Weekly Report - V0.2",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "project",
+        "id": "={{ $json.Id }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -140
+      ],
+      "id": "31ff4cac-81ad-496e-a0fc-74bc4a4ed42b",
+      "name": "Get Project Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "project": "={{ $json.gid }}"
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        20
+      ],
+      "id": "923c1099-9ad6-4802-bcc9-8760318e9f51",
+      "name": "Get All Tasks",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU",
+          "mode": "list",
+          "cachedResultName": "Asana Decisioning - DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1389913637,
+          "mode": "list",
+          "cachedResultName": "Projects Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit#gid=1389913637"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "gid"
+          ],
+          "schema": [
+            {
+              "id": "gid",
+              "displayName": "gid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "archived",
+              "displayName": "archived",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "color",
+              "displayName": "color",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "completed",
+              "displayName": "completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "completed_at",
+              "displayName": "completed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_status",
+              "displayName": "current_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_status_update",
+              "displayName": "current_status_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "custom_fields",
+              "displayName": "custom_fields",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "custom_field_settings",
+              "displayName": "custom_field_settings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "default_access_level",
+              "displayName": "default_access_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "default_view",
+              "displayName": "default_view",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_on",
+              "displayName": "due_on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "followers",
+              "displayName": "followers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "members",
+              "displayName": "members",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "minimum_access_level_for_customization",
+              "displayName": "minimum_access_level_for_customization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "minimum_access_level_for_sharing",
+              "displayName": "minimum_access_level_for_sharing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "modified_at",
+              "displayName": "modified_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "owner",
+              "displayName": "owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "permalink_url",
+              "displayName": "permalink_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "privacy_setting",
+              "displayName": "privacy_setting",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "public",
+              "displayName": "public",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resource_type",
+              "displayName": "resource_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_on",
+              "displayName": "start_on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "team",
+              "displayName": "team",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workspace",
+              "displayName": "workspace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -740,
+        -280
+      ],
+      "id": "fd016458-d4ae-4ba4-9ac1-2b80064b4ddf",
+      "name": "Update Due Dates",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "id": "={{ $json.gid }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        20
+      ],
+      "id": "9cf132ac-7128-42b7-9352-7e50877e2d89",
+      "name": "Task Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU",
+          "mode": "list",
+          "cachedResultName": "Asana Decisioning - DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 55680481,
+          "mode": "list",
+          "cachedResultName": "Projects",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit#gid=55680481"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1200,
+        -140
+      ],
+      "id": "70ff35c8-339d-4354-a2db-dd0896ed0603",
+      "name": "Read Projects",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "24bf2245-445d-4dd5-a5c8-7c23d6f2d767",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1460,
+        -340
+      ],
+      "id": "f599d6cd-c9fe-4e3e-979d-f7a31ae2155a",
+      "name": "Webhook",
+      "webhookId": "24bf2245-445d-4dd5-a5c8-7c23d6f2d767"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1460,
+        -20
+      ],
+      "id": "902cb8fd-5918-49a9-b4f4-b2761f2ed34b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -280
+      ],
+      "id": "2b578fff-073c-4ad0-911a-8099514fc13d",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU",
+          "mode": "list",
+          "cachedResultName": "Asana Decisioning - DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 905611548,
+          "mode": "list",
+          "cachedResultName": "Tasks Basic Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit#gid=905611548"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gid": "={{ $json.gid }}",
+            "name": "={{ $json.name }}",
+            "resource_type": "={{ $json.resource_type }}",
+            "resource_subtype": "={{ $json.resource_subtype }}"
+          },
+          "matchingColumns": [
+            "gid"
+          ],
+          "schema": [
+            {
+              "id": "gid",
+              "displayName": "gid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resource_type",
+              "displayName": "resource_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resource_subtype",
+              "displayName": "resource_subtype",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -540,
+        20
+      ],
+      "id": "0b62c215-f9a4-418a-a2b7-b04b8ac2c856",
+      "name": "Update List of Tasks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU",
+          "mode": "list",
+          "cachedResultName": "Asana Decisioning - DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1333003135,
+          "mode": "list",
+          "cachedResultName": "Task Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KrmmLw5R-jA9MY3V4esE2Co061z9GM3MEGsy6oexlWU/edit#gid=1333003135"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "gid"
+          ],
+          "schema": [
+            {
+              "id": "gid",
+              "displayName": "gid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "actual_time_minutes",
+              "displayName": "actual_time_minutes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "assignee",
+              "displayName": "assignee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "assignee_status",
+              "displayName": "assignee_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "completed",
+              "displayName": "completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "completed_at",
+              "displayName": "completed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "custom_fields",
+              "displayName": "custom_fields",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_at",
+              "displayName": "due_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_on",
+              "displayName": "due_on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "followers",
+              "displayName": "followers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hearted",
+              "displayName": "hearted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hearts",
+              "displayName": "hearts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "liked",
+              "displayName": "liked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "likes",
+              "displayName": "likes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "memberships",
+              "displayName": "memberships",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "modified_at",
+              "displayName": "modified_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "num_hearts",
+              "displayName": "num_hearts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "num_likes",
+              "displayName": "num_likes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "parent",
+              "displayName": "parent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "permalink_url",
+              "displayName": "permalink_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projects",
+              "displayName": "projects",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resource_type",
+              "displayName": "resource_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_at",
+              "displayName": "start_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "start_on",
+              "displayName": "start_on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tags",
+              "displayName": "tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "resource_subtype",
+              "displayName": "resource_subtype",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workspace",
+              "displayName": "workspace",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -80,
+        20
+      ],
+      "id": "1ec2ee4d-c7a3-4193-b1de-ebe0e5a83354",
+      "name": "Update Task Details",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        180,
+        20
+      ],
+      "id": "8f4e485a-e826-4140-877c-f352913c6a30",
+      "name": "No Operation, do nothing1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Project Details": {
+      "main": [
+        [
+          {
+            "node": "Get All Tasks",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Due Dates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Tasks": {
+      "main": [
+        [
+          {
+            "node": "Update List of Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Due Dates": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Details": {
+      "main": [
+        [
+          {
+            "node": "Update Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Projects": {
+      "main": [
+        [
+          {
+            "node": "Get Project Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update List of Tasks": {
+      "main": [
+        [
+          {
+            "node": "Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Task Details": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "91c1ccc0-0f31-42e3-9d5c-34e5f728c0e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb8e473f92ba6bd01b257fc8a12b335e065f87a93d168894cc1dbb59e0596a74"
+  },
+  "id": "miFUCT9isL0Apz0Z",
+  "tags": [
+    {
+      "createdAt": "2025-03-25T12:27:55.432Z",
+      "updatedAt": "2025-03-25T12:27:55.432Z",
+      "id": "pVX9pUZEa8XSZzuk",
+      "name": "asana-automation"
+    }
+  ]
+}

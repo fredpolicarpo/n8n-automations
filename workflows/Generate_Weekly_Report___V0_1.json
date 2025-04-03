@@ -1,0 +1,1248 @@
+{
+  "name": "Generate Weekly Report - V0.1",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "project",
+        "id": "={{ $json.Id }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -140
+      ],
+      "id": "9f6646d2-fe39-496a-9feb-57481d15d33a",
+      "name": "Get Project Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "filters": {
+          "project": "={{ $json.gid }}"
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        -40
+      ],
+      "id": "47e67853-b979-44d9-9843-42312b0bc365",
+      "name": "Get All Tasks",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6259f731-2a13-4fc6-9fd2-a3d08a57ce1a",
+              "leftValue": "={{ $json.resource_subtype }}",
+              "rightValue": "milestone",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -480,
+        -80
+      ],
+      "id": "71f08240-4234-4cc5-b9a6-c95aa2bef8b3",
+      "name": "Filter Milestones"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "id": "={{ $json.gid }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "38932cd2-87fb-40ec-ace6-7e5163de7835",
+      "name": "Milestone Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2084197806,
+          "mode": "list",
+          "cachedResultName": "Due dates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=2084197806"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Milestone": "={{ $json.name }}",
+            "Date": "={{ $json.due_on }}",
+            "Status": "={{ $json.completed  ? \"Done\" : \"Pending\" }}",
+            "ProjectId": "={{ $json.projects[0].gid }}",
+            "ProjectName": "={{ $json.projects[0].name }}",
+            "MilestoneID": "={{ $json.gid }}"
+          },
+          "matchingColumns": [
+            "MilestoneID"
+          ],
+          "schema": [
+            {
+              "id": "ProjectId",
+              "displayName": "ProjectId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProjectName",
+              "displayName": "ProjectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Milestone",
+              "displayName": "Milestone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "MilestoneID",
+              "displayName": "MilestoneID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        140,
+        -80
+      ],
+      "id": "1d529a87-b8f1-4267-b150-7afe01b55cad",
+      "name": "Update Due Dates",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1878146226,
+          "mode": "list",
+          "cachedResultName": "Status Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=1878146226"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Author": "={{ $json.current_status.author.name }}",
+            "color": "={{ $json.current_status.color }}",
+            "Status update": "={{ $json.current_status.text }}",
+            "Date": "={{ $json.current_status.created_at }}",
+            "ProjectId": "={{ $json.gid }}",
+            "ProjectName": "={{ $json.name }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "ProjectId",
+              "displayName": "ProjectId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProjectName",
+              "displayName": "ProjectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Author",
+              "displayName": "Author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "color",
+              "displayName": "color",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status update",
+              "displayName": "Status update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -700,
+        -420
+      ],
+      "id": "6c891f78-2966-4616-9c00-0991db885ff1",
+      "name": "Update Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6259f731-2a13-4fc6-9fd2-a3d08a57ce1a",
+              "leftValue": "={{ $json.resource_subtype }}",
+              "rightValue": "default_task",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        140
+      ],
+      "id": "7dd56905-e645-484f-aea8-5b530834c6c6",
+      "name": "Filter Tasks"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "id": "={{ $json.gid }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        140
+      ],
+      "id": "535abcaf-49fb-4355-a495-5818eb08e449",
+      "name": "Task Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "custom_fields[3].number_value"
+            }
+          ]
+        },
+        "fieldsToSplitBy": "projects[0].gid, projects[0].name",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ],
+      "id": "1b1d53a4-8632-42fd-a52a-0077c4d729f0",
+      "name": "Sum Initial Estimations"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "append",
+              "field": "custom_fields[3].number_value",
+              "includeEmpty": true
+            }
+          ]
+        },
+        "fieldsToSplitBy": "projects[0].gid, projects[0].name",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        80
+      ],
+      "id": "85f16bb4-b392-4da6-a8ec-086c69ea1bb2",
+      "name": "Join estimations"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "af787661-7cc6-4349-820a-e2d2382193d6",
+              "leftValue": "={{ $json.appended_custom_fields3_number_value }}",
+              "rightValue": "={{null}}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        180
+      ],
+      "id": "a92ca3ac-8267-4a8c-a8d9-1e82994e1706",
+      "name": "Has pending estimation"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 273735689,
+          "mode": "list",
+          "cachedResultName": "Intial Estimations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=273735689"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Value": "TBD",
+            "ProjectId": "={{ $json.projects0_gid }}",
+            "ProjectName": "={{ $json.projects0_name }}",
+            "Item": "=Total Estimation"
+          },
+          "matchingColumns": [
+            "ProjectId"
+          ],
+          "schema": [
+            {
+              "id": "ProjectId",
+              "displayName": "ProjectId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProjectName",
+              "displayName": "ProjectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Value",
+              "displayName": "Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        900,
+        80
+      ],
+      "id": "cc918579-8403-403a-a526-9a2a0e4c90af",
+      "name": "Estimation TBD",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 273735689,
+          "mode": "list",
+          "cachedResultName": "Intial Estimations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=273735689"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Item": "Total Estimation",
+            "Value": "={{ $json.sum_custom_fields3_number_value }}",
+            "ProjectId": "={{ $json.projects0_gid }}",
+            "ProjectName": "={{ $json.projects0_name }}"
+          },
+          "matchingColumns": [
+            "ProjectId"
+          ],
+          "schema": [
+            {
+              "id": "ProjectId",
+              "displayName": "ProjectId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProjectName",
+              "displayName": "ProjectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Value",
+              "displayName": "Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        900,
+        280
+      ],
+      "id": "0ed10f04-18ad-4d73-8e01-08acc09dfebc",
+      "name": "Update Estimation",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "projects0_gid",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        400,
+        180
+      ],
+      "id": "6e299da6-7f12-4053-a1ce-6d9d7c30ff2d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 55680481,
+          "mode": "list",
+          "cachedResultName": "Projects",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=55680481"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1200,
+        -140
+      ],
+      "id": "c4ea7b23-5b10-4ee7-93a1-56920af625ee",
+      "name": "Read Projects",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "89cfe116-72a5-4d4b-ac80-3b2af9e74013",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1440,
+        -340
+      ],
+      "id": "d879f2ee-af29-488b-96e2-f998b5c96fe2",
+      "name": "Webhook",
+      "webhookId": "89cfe116-72a5-4d4b-ac80-3b2af9e74013"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a report with the following template for the project with id={{ $json.ProjectId }}\n\nUse the tempalte below. Note that we have notes in the template, with instructions on how to generate that information, the notes are into (), please execution the instrucitions in the note, and remove it from the final result.\n\n{{ $json.ProjectName }} [ {{ $json.color }} (Replace the color name for a emoj of a circle on that color, if color is null just omit it) ]\nDue Dates:\n - (Instruction: Create a list for all milestones of this project with MilestoneName: Milestone Due Date)",
+        "options": {
+          "systemMessage": "=You are Engineering Manager assistant, to help with project portfolio managament. Please use technical vocabulary, help to reword/format content.\n\nYou can find information for the projects in the GoogleSheets tools added to the agente, we have one sheet for each category of information:Milestones, Initial estimations and Status updates. You have the authorization to access that data."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1840,
+        -260
+      ],
+      "id": "6199f9fe-08eb-4f50-8ab5-00cbf1fa093b",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1240,
+        180
+      ],
+      "id": "43bc147c-89e2-431c-8f85-1e87372696d8",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.ProjectId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1820,
+        180
+      ],
+      "id": "2d8c4728-c732-456a-93b3-36ad63dfa9ba",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Initial estimations for the projects",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 273735689,
+          "mode": "list",
+          "cachedResultName": "Intial Estimations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=273735689"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ProjectName",
+              "lookupValue": "={{ $fromAI('Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        1980,
+        160
+      ],
+      "id": "2d5c47fd-f1bb-4d72-be54-08efb7156dae",
+      "name": "Project Initial Estimations",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this sheet to read the milestone data for the project you are generating the report. ",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2084197806,
+          "mode": "list",
+          "cachedResultName": "Milestones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=2084197806"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ProjectId",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Value', `Project ID`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        2180,
+        160
+      ],
+      "id": "3a2e9600-3256-413b-9e59-a71043e60645",
+      "name": "Project Milestones",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get the status updates of the projects",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1878146226,
+          "mode": "list",
+          "cachedResultName": "Status Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=1878146226"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ProjectName",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        2380,
+        160
+      ],
+      "id": "abebe0b8-2490-4c2a-9143-810db1d97830",
+      "name": "Project Status Updates",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.aiTransform",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        2040
+      ],
+      "id": "35b5368f-015f-4715-8b68-4fc934282e47",
+      "name": "AI Transform"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1460,
+        -20
+      ],
+      "id": "4963f542-f3b5-4470-9521-a4af70dd0b57",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        -20
+      ],
+      "id": "c218a913-4e24-4f79-844d-abe92b6a0094",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "M1L8FVlpGRz74FK7",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1500,
+        -280
+      ],
+      "id": "7349bc9c-d48d-4501-8ccb-de92ee620500",
+      "name": "Merge2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Project Details": {
+      "main": [
+        [
+          {
+            "node": "Get All Tasks",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Tasks": {
+      "main": [
+        [
+          {
+            "node": "Filter Milestones",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Milestones": {
+      "main": [
+        [
+          {
+            "node": "Milestone Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Milestone Details": {
+      "main": [
+        [
+          {
+            "node": "Update Due Dates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Due Dates": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter Tasks": {
+      "main": [
+        [
+          {
+            "node": "Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Details": {
+      "main": [
+        [
+          {
+            "node": "Sum Initial Estimations",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Join estimations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sum Initial Estimations": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Join estimations": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has pending estimation": {
+      "main": [
+        [
+          {
+            "node": "Estimation TBD",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Estimation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Estimation": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Has pending estimation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Projects": {
+      "main": [
+        [
+          {
+            "node": "Get Project Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estimation TBD": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project Initial Estimations": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project Milestones": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project Status Updates": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "32c9b522-1738-4d38-bad7-e136c9e0d1a4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb8e473f92ba6bd01b257fc8a12b335e065f87a93d168894cc1dbb59e0596a74"
+  },
+  "id": "YKbMn3c7BK84ISfD",
+  "tags": [
+    {
+      "createdAt": "2025-03-25T12:27:55.432Z",
+      "updatedAt": "2025-03-25T12:27:55.432Z",
+      "id": "pVX9pUZEa8XSZzuk",
+      "name": "asana-automation"
+    }
+  ]
+}
