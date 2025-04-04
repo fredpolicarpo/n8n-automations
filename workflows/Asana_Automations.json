@@ -1,0 +1,922 @@
+{
+  "name": "Asana Automations",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "filters": {
+          "project": "={{ $json[\"Board ID\"] }}"
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        -440
+      ],
+      "id": "2ed6e9bf-a3f1-401b-930a-bf6b36aeac63",
+      "name": "Get All Tasks",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6259f731-2a13-4fc6-9fd2-a3d08a57ce1a",
+              "leftValue": "={{ $json.resource_subtype }}",
+              "rightValue": "default_task",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        -440
+      ],
+      "id": "18ac2f40-d562-4ff4-b450-67083d68d336",
+      "name": "Filter Tasks"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "id": "={{ $json.gid }}"
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        -440
+      ],
+      "id": "7cbe204c-7ee0-46b6-abae-55db844dcb81",
+      "name": "Task Details",
+      "credentials": {
+        "asanaOAuth2Api": {
+          "id": "n8V6QIXZjdo2bapE",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1188502636,
+          "mode": "list",
+          "cachedResultName": "Sprint",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=1188502636"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1220,
+        -440
+      ],
+      "id": "6848fc1a-be13-461f-92ff-a0b4f78f82a6",
+      "name": "Read Projects",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "={{ $json.owner }}",
+          "mode": "username"
+        },
+        "text": "=Hi there, you need to check some Asana Tasks 👮\n\n{{ $json.tasks.map(it => \"Task: \" + it.task + \"\\nPlease Check:\\n\\t - \" \n + it.missing.join(\"\\n\\t - \")\n).join(\"\\n\\n\") }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1460,
+        300
+      ],
+      "id": "31290f6b-fd5a-4d51-9006-dd94a8008ba5",
+      "name": "Slack",
+      "webhookId": "f607d491-3603-4799-82fa-779a9ad5604d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Ko3zuRQ42b35TTju",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1216017588,
+          "mode": "list",
+          "cachedResultName": "DM Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=1216017588"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{new Date().toISOString().split('T')[0]}}",
+            "Owner": "={{ $('Split Out').item.json.owner }}"
+          },
+          "matchingColumns": [
+            "Owner"
+          ],
+          "schema": [
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1280,
+        300
+      ],
+      "id": "311622a0-06a1-41e5-a383-f8a4769cf421",
+      "name": "Register DM Sent",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc",
+          "mode": "list",
+          "cachedResultName": "Asana Project Updates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1216017588,
+          "mode": "list",
+          "cachedResultName": "DM Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NBoqD97YF_0LwkSH4B7_D9ZTcGjrSgl8deJCUuzstMc/edit#gid=1216017588"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1660,
+        -440
+      ],
+      "id": "a16750b4-105f-4b34-8ede-912c853b57a9",
+      "name": "Read DM already sent",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "imoYD6TnzaquXFD3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "Owner,  Date",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        -440
+      ],
+      "id": "8703c52f-e3fb-44cf-be68-53855f104c8d",
+      "name": "Aggregate",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "923b746c-70ea-4c1b-b1ed-63f1d7d4a271",
+              "leftValue": "={{ $('Aggregate').item.json.data.find(it => it.Owner == $json.Owner) == null || $('Aggregate').item.json.data.find(it => it.Owner == $json.Owner).Date != new Date().toISOString().split('T')[0]}}",
+              "rightValue": "={{ $json.permalink_url }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -760,
+        -100
+      ],
+      "id": "0f9f62c0-6bb3-4b44-8887-320201f7e0c1",
+      "name": "Filter DM already sent Today"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 17 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1860,
+        -440
+      ],
+      "id": "6a8f71ec-7a8d-4351-a4a7-063e60121b08",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a34bff1-eb3f-45f7-8af0-961f93fd47e3",
+              "leftValue": "={{ $json.memberships.find(item => item.project.gid == $('Read Projects').item.json[\"Board ID\"]).section.name}}",
+              "rightValue": "Done",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1860,
+        -200
+      ],
+      "id": "ea46c6c2-6b9c-4f98-907b-3818157224c7",
+      "name": "Filter completed tasks"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4245bab8-e23c-46e7-9f95-03dd67b6d024",
+              "leftValue": "={{ $json.custom_fields.find(it => it.gid=$('Read Projects').item.json[\"Board ID\"] && it.name=='Actual Effort Days' ).number_value }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "807e1adb-22d4-4612-ab07-d3ad8edb0a97",
+              "leftValue": "={{ $json.custom_fields.find(it => it.gid=$('Read Projects').item.json[\"Board ID\"] && it.name=='Actual Effort Days' ).number_value }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1620,
+        -200
+      ],
+      "id": "6e9f2d8b-b3d8-44c4-8fb5-9ab1377286ed",
+      "name": "Filter missing Execution Days"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4245bab8-e23c-46e7-9f95-03dd67b6d024",
+              "leftValue": "={{ $json.custom_fields.find(it => it.gid=$('Read Projects').item.json[\"Board ID\"] && it.name=='Initial Estimated Days' ).number_value }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "807e1adb-22d4-4612-ab07-d3ad8edb0a97",
+              "leftValue": "={{ $json.custom_fields.find(it => it.gid=$('Read Projects').item.json[\"Board ID\"] && it.name=='Initial Estimated Days' ).number_value }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1620,
+        -20
+      ],
+      "id": "ae895c18-2f29-4d60-9957-7edc0f25e714",
+      "name": "Filter missing Estimation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a34bff1-eb3f-45f7-8af0-961f93fd47e3",
+              "leftValue": "={{ $json.memberships.find(item => item.project.gid == $('Read Projects').item.json[\"Board ID\"]).section.name}}",
+              "rightValue": "TODO",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1860,
+        -20
+      ],
+      "id": "939ae8b8-b1ec-4d4d-bdcb-682e26655458",
+      "name": "Filter Started Tasks"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "449487f1-8b69-4e75-85ee-0858277ade91",
+              "name": "Task",
+              "value": "={{ $json.permalink_url }}",
+              "type": "string"
+            },
+            {
+              "id": "1f944a45-af96-40c9-af97-38e0590e1153",
+              "name": "Owner",
+              "value": "={{ $json.assignee.name }}",
+              "type": "string"
+            },
+            {
+              "id": "7a5fc6dc-5c97-4250-89f9-d5a8316db7f2",
+              "name": "Message Type",
+              "value": "Missing Estimations Days",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1380,
+        -20
+      ],
+      "id": "0ca6f762-5a45-48c4-ab4e-b04be2f8adb0",
+      "name": "Estimations"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "449487f1-8b69-4e75-85ee-0858277ade91",
+              "name": "Task",
+              "value": "={{ $json.permalink_url }}",
+              "type": "string"
+            },
+            {
+              "id": "1f944a45-af96-40c9-af97-38e0590e1153",
+              "name": "Owner",
+              "value": "={{ $json.assignee.name }}",
+              "type": "string"
+            },
+            {
+              "id": "7a5fc6dc-5c97-4250-89f9-d5a8316db7f2",
+              "name": "Message Type",
+              "value": "Missing Executiong Days",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1380,
+        -200
+      ],
+      "id": "e3ca39f2-929e-408c-a848-613fe23f2ebc",
+      "name": "Execution Days"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -1120,
+        -100
+      ],
+      "id": "50e4e204-279f-4d2d-8cc2-faa258422a83",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9185676b-ba12-433f-bf69-0ac07f623f1d",
+              "name": "Task",
+              "value": "={{ $json.Task }}",
+              "type": "string"
+            },
+            {
+              "id": "8af7f2f4-f7fa-4c3d-a918-ad8ef8193cb3",
+              "name": "Message Type",
+              "value": "={{ $json['Message Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "371921a7-307b-4242-836a-7111c8f72017",
+              "name": "Owner",
+              "value": "={{\n{\"Santiago Andres Vela Aguilera\": \"svela\",\"Luis Fernando Rosales Cadena\": \"lrosales\",\n\"Frederico Policarpo Martins Boaventura\": \"fpolicarpo\", \"Gabriel Abadi\":\"gabadi\", \"Jairo Salazar\":\"jsalazar\"}[$json.Owner] || \"fpolicarpo\"\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -960,
+        -100
+      ],
+      "id": "2236cc53-b539-46b4-97e3-24dba7e6e1c1",
+      "name": "Map Slack Owner"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "append",
+              "field": "Message Type"
+            },
+            {
+              "aggregation": "max",
+              "field": "Owner"
+            }
+          ]
+        },
+        "fieldsToSplitBy": "Owner, Task",
+        "options": {
+          "outputFormat": "singleItem"
+        }
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        -20
+      ],
+      "id": "5455fe26-3098-40ee-a296-2da55fbe26ba",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "498319ae-c464-4d95-905b-ad3d1373c9ce",
+              "name": "Items",
+              "value": "={{ Object.entries($json).map(([owner, tasks]) => ({ owner, tasks: Object.entries(tasks).map(([task, data]) => ({ task, missing: data.appended_Message_Type })) })) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1880,
+        300
+      ],
+      "id": "f5172048-4203-4e03-89bf-6346040417b1",
+      "name": "Edit Fields",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        300
+      ],
+      "id": "649c0753-3730-4a9f-bd9e-654fcc303457",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        300
+      ],
+      "id": "862f3a2a-70c7-4ec5-8573-117df6874b87",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get All Tasks": {
+      "main": [
+        [
+          {
+            "node": "Filter Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Tasks": {
+      "main": [
+        [
+          {
+            "node": "Task Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Details": {
+      "main": [
+        [
+          {
+            "node": "Filter completed tasks",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter Started Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Projects": {
+      "main": [
+        [
+          {
+            "node": "Get All Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack": {
+      "main": [
+        [
+          {
+            "node": "Register DM Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read DM already sent": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Read Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter DM already sent Today": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read DM already sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter completed tasks": {
+      "main": [
+        [
+          {
+            "node": "Filter missing Execution Days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter missing Execution Days": {
+      "main": [
+        [
+          {
+            "node": "Execution Days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Started Tasks": {
+      "main": [
+        [
+          {
+            "node": "Filter missing Estimation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter missing Estimation": {
+      "main": [
+        [
+          {
+            "node": "Estimations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execution Days": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estimations": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Map Slack Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Slack Owner": {
+      "main": [
+        [
+          {
+            "node": "Filter DM already sent Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register DM Sent": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "badba2ba-dd85-4b21-8dba-31738e7d096d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cb8e473f92ba6bd01b257fc8a12b335e065f87a93d168894cc1dbb59e0596a74"
+  },
+  "id": "nV3i9926GUHetcKk",
+  "tags": [
+    {
+      "createdAt": "2025-03-25T12:27:55.432Z",
+      "updatedAt": "2025-03-25T12:27:55.432Z",
+      "id": "pVX9pUZEa8XSZzuk",
+      "name": "asana-automation"
+    }
+  ]
+}
