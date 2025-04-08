@@ -11,16 +11,16 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1480,
-        -140
+        -1540,
+        680
       ],
-      "id": "e19c4be4-677a-4d90-acfd-f429c28761aa",
+      "id": "b4ab8909-4cf1-440b-8071-55546d4f4a1c",
       "name": "Telegram Trigger",
       "webhookId": "85244450-329e-4180-a71a-fea56de43401",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -52,10 +52,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1180,
-        -560
+        -1240,
+        260
       ],
-      "id": "ebebd74e-523c-469e-a81d-c0b0691f7e69",
+      "id": "5d3d9b98-1a8c-4e63-b35c-8b8f762708e9",
       "name": "If1"
     },
     {
@@ -68,10 +68,10 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -460,
-        -580
+        -560,
+        240
       ],
-      "id": "a650a347-3bec-44f4-b21c-a673356e3035",
+      "id": "5bd18564-5b13-48ab-a59b-377aaea1a758",
       "name": "Extract from File"
     },
     {
@@ -82,14 +82,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        0,
-        -780
+        -80,
+        80
       ],
-      "id": "d294c70f-9c93-4268-b756-4703c5afb320",
+      "id": "6b08b43d-3b37-4f67-9f6a-d97610270015",
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "K9UaYbRUTY4MsN3x",
+          "id": "9RhmBdaqjMmiyd45",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
@@ -111,10 +111,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        380,
-        -960
+        320,
+        -140
       ],
-      "id": "2bb72d28-1b4d-41bd-8d36-61c9e0141aa1",
+      "id": "f362f37d-6881-4c62-8333-def7217779d5",
       "name": "Edit Fields"
     },
     {
@@ -128,16 +128,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        640,
-        -960
+        580,
+        -140
       ],
-      "id": "8a828d4d-fcd8-4388-adf1-81562306ac34",
+      "id": "25941959-4f71-4bc6-8778-9472878e514c",
       "name": "Show receives summary",
       "webhookId": "348f549b-a1ff-4e22-83bb-b91fad21d82a",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -160,16 +160,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        900,
-        -960
+        840,
+        -140
       ],
-      "id": "bd7c599f-e085-4fd9-9397-d64e73729c25",
+      "id": "b057eee1-36ce-462f-88d3-8e25a8cbe75c",
       "name": "Ask BRL amount",
       "webhookId": "f3dc2b08-249b-41f1-8e98-6baea3a2bd55",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -184,16 +184,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1460,
-        -960
+        1400,
+        -140
       ],
-      "id": "f4dd81db-11cb-4236-807d-a8e9e989cecb",
+      "id": "cbc9a9a9-d3f6-47b0-bb5c-b4e67e96ac2e",
       "name": "Telegram4",
       "webhookId": "24b3c0fc-48e9-4bd0-b6e3-e252ada213c7",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -214,10 +214,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1180,
-        -960
+        1120,
+        -140
       ],
-      "id": "c75e70e7-b17e-4c9d-b3bb-e6ec641cb827",
+      "id": "5ae3cf2d-1227-403f-ba37-fe92a35890f6",
       "name": "Get Dollar Rate"
     },
     {
@@ -231,16 +231,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1920,
-        -960
+        1860,
+        -140
       ],
-      "id": "560eaabc-f710-4d9b-a209-fd86357d5b7f",
+      "id": "f84c0a30-322f-4f9d-bcc8-3051cd61982c",
       "name": "Telegram5",
       "webhookId": "006a61fd-b270-438a-85ed-7d55dbf02552",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -259,16 +259,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -900,
-        -580
+        -960,
+        240
       ],
-      "id": "680c66ff-298b-4ff2-86fc-32882065ff5d",
+      "id": "4f6ae62f-3f79-4807-b51b-75e6e75cfc5c",
       "name": "Akg PDF",
       "webhookId": "348f549b-a1ff-4e22-83bb-b91fad21d82a",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -289,10 +289,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1700,
-        -960
+        1640,
+        -140
       ],
-      "id": "321681a2-24cf-4dfb-81b0-43a9b6e7fd84",
+      "id": "1a2370c5-885d-477e-b7a1-c74a0f6fda1d",
       "name": "Edit Fields1"
     },
     {
@@ -374,10 +374,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -1260,
-        -140
+        -1320,
+        680
       ],
-      "id": "f54c983b-9df7-4555-b955-28f9fe7a68d5",
+      "id": "c85d0312-ba39-4a92-861c-50b419a428b4",
       "name": "Switch"
     },
     {
@@ -385,10 +385,10 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        2140,
-        -960
+        2080,
+        -140
       ],
-      "id": "c217e4a4-acc5-46d8-a1ea-917cb2d8e3f6",
+      "id": "e603730d-c13a-49e6-926d-958e2b7ca536",
       "name": "No Operation, do nothing"
     },
     {
@@ -399,16 +399,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -660,
-        -580
+        -720,
+        240
       ],
-      "id": "f7a1ba2b-5b42-4387-9e23-592b59fc1f2f",
+      "id": "631330a1-257e-4c80-95bc-57bb20accc41",
       "name": "Get PDF",
       "webhookId": "323e5ca4-9a8c-4d1a-8efb-b8f269e77e6f",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -439,10 +439,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
-        -580
+        -400,
+        240
       ],
-      "id": "b16d71a3-a837-4dfa-94a9-a64f0d4221e3",
+      "id": "dbcfaca8-465f-4774-a3bd-8f4cbb6e4168",
       "name": "If"
     },
     {
@@ -453,10 +453,10 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.5,
       "position": [
-        0,
-        -460
+        -180,
+        360
       ],
-      "id": "4e60e845-63df-4ef2-b607-65f0110f3fe1",
+      "id": "25ea3db0-64c5-44b0-9291-7ca6c44a93d6",
       "name": "Basic LLM Chain1"
     },
     {
@@ -467,14 +467,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -40,
-        -240
+        -100,
+        580
       ],
-      "id": "63404b5d-73c5-4c63-b81e-11f86ef66916",
+      "id": "1a298d49-37c0-4e07-a4b1-da2c1b548d9e",
       "name": "Google Gemini Chat Model1",
       "credentials": {
         "googlePalmApi": {
-          "id": "K9UaYbRUTY4MsN3x",
+          "id": "9RhmBdaqjMmiyd45",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
@@ -490,17 +490,17 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1560,
-        -620
+        1200,
+        540
       ],
-      "id": "880f5e01-0c95-4868-bf89-2561d913c0a1",
+      "id": "31a24c0e-9e18-400e-a0e1-9500c5c6d265",
       "name": "Telegram3",
       "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
       "executeOnce": true,
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -515,16 +515,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -740,
-        -140
+        -800,
+        680
       ],
-      "id": "56399836-ea69-4823-be40-9456172151e0",
+      "id": "84e033cd-4ddb-4a7d-af6e-a203305c978b",
       "name": "Ask PDF for upload",
       "webhookId": "828d74a8-21ba-4732-95e1-8764b79762c7",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -537,16 +537,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -960,
-        -320
+        -1020,
+        500
       ],
-      "id": "2a791ecf-1a05-44c7-9fae-4048dfa3cc3e",
+      "id": "a2d4f903-676a-4538-b6f9-ccb25ebb6903",
       "name": "Ask PDF for parsing",
       "webhookId": "a4d8dc0c-7792-42ba-8b33-e4d6eef2ae31",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -561,16 +561,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -980,
-        140
+        -1040,
+        960
       ],
-      "id": "f42f27be-dda4-425d-92c5-1b167938394f",
+      "id": "5a5b2b78-1f02-4ed8-bf9e-41ab9c4a69b4",
       "name": "Show options",
       "webhookId": "e7820461-38c1-4afc-8233-b5a276c72802",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -582,69 +582,45 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.5,
       "position": [
-        0,
-        -960
+        -120,
+        -140
       ],
-      "id": "7aff643c-acd1-4a32-88d5-15d2cfd0ede1",
+      "id": "b3fe8ee7-8b45-4871-ac2b-67db9cc24551",
       "name": "Process Invoice"
     },
     {
       "parameters": {
         "resource": "fileFolder",
-        "queryString": "={{ $json.text.trim() }}",
-        "filter": {},
+        "queryString": "={{ $('Basic LLM Chain1').item.json.text }}",
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1rDpjb7PJ3rjhck8i7hiRiu1yEGsEOLi0",
+            "mode": "list",
+            "cachedResultName": "PJ",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1rDpjb7PJ3rjhck8i7hiRiu1yEGsEOLi0"
+          },
+          "includeTrashed": false
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        340,
-        -460
+        320,
+        360
       ],
-      "id": "96d76716-eb5b-43b4-8ec9-41e715094a66",
+      "id": "8e55dccf-ee39-4a97-a7ae-14626c1cbbe5",
       "name": "Search existing folder",
       "alwaysOutputData": true,
       "executeOnce": true,
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "rzaX31cksKnOiIsm",
+          "id": "7ZZCWoVQmPB6nLWI",
           "name": "Google Drive account"
         }
       }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "057468c9-0adb-4471-91ce-55efd6535ab1",
-              "leftValue": "={{ $json.name }}",
-              "rightValue": "={{ $('Basic LLM Chain1').item.json.text.trim() }}",
-              "operator": {
-                "type": "string",
-                "operation": "notExists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        540,
-        -460
-      ],
-      "id": "9f891c6a-28a2-4712-82a4-37c978ace335",
-      "name": "If2"
     },
     {
       "parameters": {
@@ -669,14 +645,14 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        800,
-        -620
+        680,
+        540
       ],
-      "id": "29115cc6-3fbc-4e46-a78f-5b05a166d9a2",
+      "id": "8b003a62-4b2e-49e3-9921-382b7048b1fe",
       "name": "Create Month Folder",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "rzaX31cksKnOiIsm",
+          "id": "7ZZCWoVQmPB6nLWI",
           "name": "Google Drive account"
         }
       }
@@ -689,23 +665,23 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1060,
-        -620
+        860,
+        540
       ],
-      "id": "e704a7b8-51ee-4821-9428-bfd278aed49b",
+      "id": "1ed30e75-5092-4c3e-81f7-6b97cb1a8054",
       "name": "Read File",
       "webhookId": "46604a6c-1c8e-4149-9174-8e2adda11003",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
     {
       "parameters": {
         "inputDataFieldName": "=data",
-        "name": "={{ $('If1').item.json.message.document.file_name }}",
+        "name": "={{ $('Set file name').item.json.file_name }}",
         "driveId": {
           "__rl": true,
           "mode": "list",
@@ -721,15 +697,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1300,
-        -620
+        1020,
+        540
       ],
-      "id": "2daa802b-3615-4fc9-8f5a-b2ff85ea050f",
+      "id": "4b09b8d4-ca93-4175-8f6b-96a20134258c",
       "name": "Upoad file",
       "executeOnce": true,
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "rzaX31cksKnOiIsm",
+          "id": "7ZZCWoVQmPB6nLWI",
           "name": "Google Drive account"
         }
       }
@@ -745,17 +721,17 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1740,
-        -180
+        1700,
+        320
       ],
-      "id": "50e09ced-654b-49d2-9fe2-8eed4a14cb0c",
+      "id": "8c1488ca-cdd2-4f2a-bb8a-98118ee6cea2",
       "name": "Telegram",
       "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
       "executeOnce": true,
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
@@ -767,23 +743,23 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1260,
-        -180
+        1220,
+        320
       ],
-      "id": "7bbd4820-05f9-4a3a-9f70-4612fcb4ce67",
+      "id": "95e408a6-533c-4728-bab9-7855078becf8",
       "name": "Read File1",
       "webhookId": "46604a6c-1c8e-4149-9174-8e2adda11003",
       "credentials": {
         "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
         }
       }
     },
     {
       "parameters": {
         "inputDataFieldName": "=data",
-        "name": "={{ $('If1').item.json.message.document.file_name }}",
+        "name": "={{ $('Set file name').item.json.file_name }}",
         "driveId": {
           "__rl": true,
           "mode": "list",
@@ -800,14 +776,14 @@
       "typeVersion": 3,
       "position": [
         1500,
-        -180
+        320
       ],
-      "id": "cbd0997b-f660-4882-9375-1dea3d4b78a7",
+      "id": "02bcfa47-bb6f-40ff-87c8-4c1b548913ce",
       "name": "Upoad to existing folder",
       "executeOnce": true,
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "rzaX31cksKnOiIsm",
+          "id": "7ZZCWoVQmPB6nLWI",
           "name": "Google Drive account"
         }
       }
@@ -815,25 +791,116 @@
     {
       "parameters": {
         "resource": "fileFolder",
-        "queryString": "={{ $('If1').item.json.message.document.file_name }}",
+        "queryString": "={{ $('Set file name').item.json.file_name }}",
         "limit": 1,
-        "filter": {},
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $('Search existing folder').item.json.id }}",
+            "mode": "id"
+          },
+          "whatToSearch": "files",
+          "includeTrashed": false
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        740,
-        -260
+        700,
+        240
       ],
-      "id": "bf5d53f0-bddc-489d-b4fa-400563da14cb",
+      "id": "43cd3be9-dca1-4f90-96e9-0078da01525c",
       "name": "Search File",
+      "alwaysOutputData": true,
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "rzaX31cksKnOiIsm",
+          "id": "7ZZCWoVQmPB6nLWI",
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=O arquivo já estava presente no seu Google Drive!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1240,
+        140
+      ],
+      "id": "1124b958-3e96-4862-919a-f0ac94b45fae",
+      "name": "Arquivo já enviado anteriormente",
+      "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "LDbOtnSZnjgyQ75g",
+          "name": "Telegram PJ Assistent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "424c63c1-2d47-47f8-8986-22de5a83cf29",
+              "name": "file_name",
+              "value": "={{ ($('If').item.json.text.includes(\"NOTA DE DÉBITO\") ? \"Nota-Debito-\" : \"NF-\") + $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        140,
+        360
+      ],
+      "id": "1a99e719-63a7-4f00-ade3-e62915506e24",
+      "name": "Set file name"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "057468c9-0adb-4471-91ce-55efd6535ab1",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "={{ $('Basic LLM Chain1').item.json.text.trim() }}",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        360
+      ],
+      "id": "29118e15-1850-4757-975e-44439793ee84",
+      "name": "Folder Exists"
     },
     {
       "parameters": {
@@ -863,36 +930,12 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        960,
-        -260
+        900,
+        240
       ],
-      "id": "5a871003-3719-40d4-8d28-dbe06c22821e",
-      "name": "If3"
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "=O arquivo já estava presente no seu Google Drive!",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1260,
-        -380
-      ],
-      "id": "0e8e0718-4a24-49fe-b9e6-f3c6fc50bf67",
-      "name": "Arquivo já enviado anteriormente",
-      "webhookId": "d721b08c-f86e-4e39-ac45-08df36c659d0",
-      "executeOnce": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "snfQHYflXj5FuBGM",
-          "name": "Telegram account"
-        }
-      }
+      "id": "105d7b69-ddb7-42c7-aa56-27d9ec293854",
+      "name": "File exists",
+      "alwaysOutputData": false
     }
   ],
   "pinData": {},
@@ -921,8 +964,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Extract from File": {
@@ -1104,21 +1146,11 @@
       "main": [
         [
           {
-            "node": "Search existing folder",
+            "node": "Set file name",
             "type": "main",
             "index": 0
           }
         ]
-      ]
-    },
-    "Ask PDF for parsing": {
-      "main": [
-        []
-      ]
-    },
-    "Show options": {
-      "main": [
-        []
       ]
     },
     "Process Invoice": {
@@ -1136,25 +1168,7 @@
       "main": [
         [
           {
-            "node": "If2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If2": {
-      "main": [
-        [
-          {
-            "node": "Create Month Folder",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Search File",
+            "node": "Folder Exists",
             "type": "main",
             "index": 0
           }
@@ -1220,14 +1234,43 @@
       "main": [
         [
           {
-            "node": "If3",
+            "node": "File exists",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If3": {
+    "Set file name": {
+      "main": [
+        [
+          {
+            "node": "Search existing folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Folder Exists": {
+      "main": [
+        [
+          {
+            "node": "Search File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Month Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File exists": {
       "main": [
         [
           {
@@ -1250,11 +1293,24 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a3ff0dcb-3f5b-4320-9a5b-101040ac31c5",
+  "versionId": "e3106e05-5fb4-4a8a-bfeb-b6cd7c2c85e8",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "cb8e473f92ba6bd01b257fc8a12b335e065f87a93d168894cc1dbb59e0596a74"
+    "instanceId": "069516fa408bfca5c9bbb9ce2450267e481dff6becd936f8d07702b857f9f249"
   },
-  "id": "zTulPPeWT90L1xWn",
-  "tags": []
+  "id": "5vLowpxlF9R31htJ",
+  "tags": [
+    {
+      "createdAt": "2025-04-08T17:08:11.921Z",
+      "updatedAt": "2025-04-08T17:08:11.921Z",
+      "id": "wujUnribyNHzvy93",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2025-04-08T17:08:19.128Z",
+      "updatedAt": "2025-04-08T17:08:19.128Z",
+      "id": "3F6pnN5beHgaCOgL",
+      "name": "personal"
+    }
+  ]
 }
