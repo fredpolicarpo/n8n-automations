@@ -1,0 +1,142 @@
+{
+  "name": "Telegram Image OCR",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1160,
+        -440
+      ],
+      "id": "bf87a989-ae4b-4cf0-b44d-cf13744a851a",
+      "name": "Telegram",
+      "webhookId": "136b8ae3-b93e-41ac-a572-433cdd4d6a93",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "fileId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1400,
+        -440
+      ],
+      "id": "632e8893-a4b5-4ed5-89ed-6a03aa8e8449",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "ocrApiKey"
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        -440
+      ],
+      "id": "credentials-node",
+      "name": "Credentials"
+    },
+    {
+      "parameters": {
+        "url": "https://api.ocr.space/parse/image",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $node[\"Credentials\"].json[\"ocrApiKey\"] }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "multipart/form-data"
+            }
+          ]
+        },
+        "options": {
+          "formData": {
+            "file": "={{ $binary.data.fileName ? { data: $binary.data.base64, fileName: $binary.data.fileName } : undefined }}",
+            "language": "por",
+            "isOverlayRequired": "false",
+            "detectOrientation": "true",
+            "scale": "true",
+            "OCREngine": "2"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -900,
+        -440
+      ],
+      "id": "4b52e2a5-a065-43fc-8b7a-effd4e77f56c",
+      "name": "OCR API"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Credentials": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "OCR API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e58531be-4a08-4650-8010-7c99905a6202",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "069516fa408bfca5c9bbb9ce2450267e481dff6becd936f8d07702b857f9f249"
+  },
+  "id": "7wk5L0pJHR3ib2Fe",
+  "tags": []
+}

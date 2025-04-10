@@ -1,0 +1,520 @@
+{
+  "name": "Bill Assistent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        -140
+      ],
+      "id": "16d6d16c-aa0c-4507-aca1-96d6b57a67a2",
+      "name": "Telegram Trigger",
+      "webhookId": "56857f79-5406-49ea-8ec3-d8f53932320e",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5c390516-b1b1-4086-bb72-c4276f6d0da1",
+              "leftValue": "={{ $json.message.photo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -700,
+        -140
+      ],
+      "id": "fd1b6a0d-f065-4bc9-852e-fa11d2833a12",
+      "name": "Has Photo"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Opa! Favor enviar uma foto da sua: fatura, comprovante de pagamento,etc..",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        0
+      ],
+      "id": "e2cc9176-52df-4fe3-9984-c7eeb6894ffe",
+      "name": "Telegram",
+      "webhookId": "b0cc7f34-89fa-4d9f-9210-4a3d94df490c",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=JSON Pronto!\nPróximo passo, enviar ao banco de dados...\n{{  JSON.stringify($json.output) }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -520
+      ],
+      "id": "c11b8c07-fc0a-49d4-a5e4-5bac2cfa4008",
+      "name": "Send Parsed Image Text",
+      "webhookId": "4a9693c1-49f9-42dc-8067-58fb5edd05b8",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6040ce09-8da2-4290-91bd-e89982f8da59"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        920,
+        140
+      ],
+      "id": "4367d314-30ae-43ba-b5af-45cf62cea230",
+      "name": "Identify Type"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Vou baixar sua imagem para extrair as informações...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        -280
+      ],
+      "id": "9ba11759-6489-4d40-bd99-e2d6c202110e",
+      "name": "Telegram1",
+      "webhookId": "8789d64f-90ca-4fb4-9f48-f5c36d4453f7",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ocr.space/parse/image",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apiKey",
+              "value": "K84542038088957"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "data",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "ocrEngine",
+              "value": "2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -180,
+        -280
+      ],
+      "id": "98b60b87-9255-42f5-8870-6f5d65c9bd7a",
+      "name": "OCR API",
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Formatar e resumir o conteúdo da seguinte mensagem, usando o formato especificado nas regras: {{ $('OCR API').item.json.ParsedResults[0].ParsedText }}\n\n# Regras:\n## Se for uma tranferência PIX: Extrair somente data e hora, valor, destino e chave pix\n## Formato de Saida(JSON - Respeitar formato data/hora fornecido)",
+        "hasOutputParser": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        440,
+        -520
+      ],
+      "id": "3fc9e3aa-2d32-4479-b3cc-7dee51c78702",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-001",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        460,
+        -380
+      ],
+      "id": "e49268ed-40f2-4418-8a5a-1ab6cf3260e2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "9RhmBdaqjMmiyd45",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.photo[3].file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -340,
+        -280
+      ],
+      "id": "9f8c7e48-b655-449a-b511-a1abb25460b7",
+      "name": "Telegram2",
+      "webhookId": "136b8ae3-b93e-41ac-a572-433cdd4d6a93",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Informações extraídas, agora vou formata-las...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        -380
+      ],
+      "id": "36b9c08a-8110-4666-a6fe-d9ba9038a0a6",
+      "name": "Telegram4",
+      "webhookId": "b63983dd-6f3b-4a0b-b8b0-58170c84a089",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5e5c2745-785e-4bdc-ab1f-9135dc16b359",
+              "leftValue": "={{ $json.ErrorMessage }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -20,
+        -280
+      ],
+      "id": "64aeb046-0e7a-4743-a2f6-74d7ba13f31e",
+      "name": "OCR Success"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Poxa, o sistema de OCR não está respondendo 😤\nTente novamente em instantes 🤷‍♂️",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        -180
+      ],
+      "id": "74a8bf19-841b-47bb-a0f7-81b5c55378b5",
+      "name": "Telegram3",
+      "webhookId": "ea7300e4-dfc8-4e9c-8856-76d3dc9a9a3f",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\"Tipo\": \"PIX|SAQUE\", \"Valor\": \"Valor monetário\", \"data\": \"dd/MM/yyyy HH:mm\", \"destinatario\": \"NOME DESTINATARIO\"}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        -300
+      ],
+      "id": "7a15d5af-48a3-4774-a14d-e12624177fc3",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Has Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Photo": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify Type": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OCR API": {
+      "main": [
+        [
+          {
+            "node": "OCR Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram2": {
+      "main": [
+        [
+          {
+            "node": "OCR API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram4": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send Parsed Image Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OCR Success": {
+      "main": [
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Parsed Image Text": {
+      "main": [
+        []
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bd0ec620-0561-4bf0-a99a-b32784226b69",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "069516fa408bfca5c9bbb9ce2450267e481dff6becd936f8d07702b857f9f249"
+  },
+  "id": "Bcc9HyFd1MgLIl88",
+  "tags": []
+}
