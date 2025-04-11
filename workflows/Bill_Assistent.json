@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
       "position": [
-        -860,
+        -1120,
         -140
       ],
       "id": "16d6d16c-aa0c-4507-aca1-96d6b57a67a2",
@@ -85,70 +85,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "=JSON Pronto!\nPróximo passo, enviar ao banco de dados...\n{{  JSON.stringify($json.output) }}",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        880,
-        -520
-      ],
-      "id": "c11b8c07-fc0a-49d4-a5e4-5bac2cfa4008",
-      "name": "Send Parsed Image Text",
-      "webhookId": "4a9693c1-49f9-42dc-8067-58fb5edd05b8",
-      "credentials": {
-        "telegramApi": {
-          "id": "uj26056TWmv7nUqu",
-          "name": "Telegram Bill Assistant"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "",
-                    "rightValue": "",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "6040ce09-8da2-4290-91bd-e89982f8da59"
-                  }
-                ],
-                "combinator": "and"
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        920,
-        140
-      ],
-      "id": "4367d314-30ae-43ba-b5af-45cf62cea230",
-      "name": "Identify Type"
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "Vou baixar sua imagem para extrair as informações...",
+        "text": "Analizando a fatura....",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -217,43 +154,6 @@
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "=Formatar e resumir o conteúdo da seguinte mensagem, usando o formato especificado nas regras: {{ $('OCR API').item.json.ParsedResults[0].ParsedText }}\n\n# Regras:\n## Se for uma tranferência PIX: Extrair somente data e hora, valor, destino e chave pix\n## Formato de Saida(JSON - Respeitar formato data/hora fornecido)",
-        "hasOutputParser": true
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.6,
-      "position": [
-        440,
-        -520
-      ],
-      "id": "3fc9e3aa-2d32-4479-b3cc-7dee51c78702",
-      "name": "Basic LLM Chain"
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.0-flash-001",
-        "options": {
-          "temperature": 0
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        460,
-        -380
-      ],
-      "id": "e49268ed-40f2-4418-8a5a-1ab6cf3260e2",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "9RhmBdaqjMmiyd45",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "resource": "file",
         "fileId": "={{ $('Telegram Trigger').item.json.message.photo[3].file_id }}"
       },
@@ -266,30 +166,6 @@
       "id": "9f8c7e48-b655-449a-b511-a1abb25460b7",
       "name": "Telegram2",
       "webhookId": "136b8ae3-b93e-41ac-a572-433cdd4d6a93",
-      "credentials": {
-        "telegramApi": {
-          "id": "uj26056TWmv7nUqu",
-          "name": "Telegram Bill Assistant"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "Informações extraídas, agora vou formata-las...",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        220,
-        -380
-      ],
-      "id": "36b9c08a-8110-4666-a6fe-d9ba9038a0a6",
-      "name": "Telegram4",
-      "webhookId": "b63983dd-6f3b-4a0b-b8b0-58170c84a089",
       "credentials": {
         "telegramApi": {
           "id": "uj26056TWmv7nUqu",
@@ -357,16 +233,162 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\"Tipo\": \"PIX|SAQUE\", \"Valor\": \"Valor monetário\", \"data\": \"dd/MM/yyyy HH:mm\", \"destinatario\": \"NOME DESTINATARIO\"}"
+        "operation": "get",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "simple": false,
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "attachment_",
+          "downloadAttachments": true
+        }
       },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -880,
+        -840
+      ],
+      "id": "f5e88407-3b85-4a62-ac7f-b0c9508317f7",
+      "name": "Gmail",
+      "webhookId": "7512fee1-b8a3-41b1-87d7-8341a3b2ea22",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ogE7dLrsa30wymy1",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true,
+      "notes": "Getting details"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        580,
-        -300
+        -1120,
+        -840
       ],
-      "id": "7a15d5af-48a3-4774-a14d-e12624177fc3",
-      "name": "Structured Output Parser"
+      "id": "833241bd-4541-4bc1-982c-1588ba398c19",
+      "name": "Gmail Trigger",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ogE7dLrsa30wymy1",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true,
+      "notes": "Email Received"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        -840
+      ],
+      "id": "6f71e418-8b9e-4e15-a5fc-a8520c8870a7",
+      "name": "Extract from File",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mjUGeMpQCtOlwNd3",
+          "mode": "list",
+          "cachedResultName": "Save Tx"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "bill": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "bill"
+          ],
+          "schema": [
+            {
+              "id": "bill",
+              "displayName": "bill",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -380,
+        -840
+      ],
+      "id": "77698b73-93a9-4fb4-b261-79b13a1d8fdd",
+      "name": "Execute Workflow",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mjUGeMpQCtOlwNd3",
+          "mode": "list",
+          "cachedResultName": "Save Tx"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "bill": "={{ $('OCR Success').item.json.ParsedResults[0].ParsedText }}"
+          },
+          "matchingColumns": [
+            "bill"
+          ],
+          "schema": [
+            {
+              "id": "bill",
+              "displayName": "bill",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        -400
+      ],
+      "id": "cf8eb56a-55a5-4c33-b22f-a466c361d3dc",
+      "name": "Execute Workflow1"
     }
   ],
   "pinData": {},
@@ -400,11 +422,6 @@
         ]
       ]
     },
-    "Identify Type": {
-      "main": [
-        []
-      ]
-    },
     "Telegram1": {
       "main": [
         [
@@ -427,17 +444,6 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Basic LLM Chain",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Telegram2": {
       "main": [
         [
@@ -449,33 +455,11 @@
         ]
       ]
     },
-    "Telegram4": {
-      "main": [
-        [
-          {
-            "node": "Basic LLM Chain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Basic LLM Chain": {
-      "main": [
-        [
-          {
-            "node": "Send Parsed Image Text",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OCR Success": {
       "main": [
         [
           {
-            "node": "Telegram4",
+            "node": "Execute Workflow1",
             "type": "main",
             "index": 0
           }
@@ -489,28 +473,45 @@
         ]
       ]
     },
-    "Send Parsed Image Text": {
+    "Gmail Trigger": {
       "main": [
-        []
-      ]
-    },
-    "Structured Output Parser": {
-      "ai_outputParser": [
         [
           {
-            "node": "Basic LLM Chain",
-            "type": "ai_outputParser",
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
             "index": 0
           }
         ]
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bd0ec620-0561-4bf0-a99a-b32784226b69",
+  "versionId": "e3c4baca-496a-4256-9c5a-e38ce9781f01",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "069516fa408bfca5c9bbb9ce2450267e481dff6becd936f8d07702b857f9f249"

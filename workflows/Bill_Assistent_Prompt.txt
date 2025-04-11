@@ -1,0 +1,8 @@
+#Task: Update the automation /home/fred/personal/n8n-automations/workflows/Bill_Assistent.json
+#Scope: Flow triggered by Telegram
+#Updates
+
+## In the list of categories, that the user chooses manualçy, add the options: Investimento and Estética
+## To define the category, check if the message where the user sent the image, also have text, and extract the category from that text(It will be in ptBR). If the category is provided in the message, don't ask it manually to the user, and update the message that show the user the details of the message adding the category in it, besides the type of transcation, value and destinatary.
+## A new google shreadsheet should be used to save categories. The sheet "Category Mapping" in the document "BD"
+
