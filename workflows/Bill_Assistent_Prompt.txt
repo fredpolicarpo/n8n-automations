@@ -4,5 +4,6 @@
 
 ## In the list of categories, that the user chooses manualçy, add the options: Investimento and Estética
 ## To define the category, check if the message where the user sent the image, also have text, and extract the category from that text(It will be in ptBR). If the category is provided in the message, don't ask it manually to the user, and update the message that show the user the details of the message adding the category in it, besides the type of transcation, value and destinatary.
-## A new google shreadsheet should be used to save categories. The sheet "Category Mapping" in the document "BD"
+## A new google shreadsheet should be used to save categories. The sheet "Category Mapping" in the document "BD". So, after parsing the image, the workflow need to check if we have a saved category for that destinatary(target), if it has, no need to ask the user, just use it and show that in the feedback message. If there is not entry for that target, ask the user, after he defined the category of the transation, if he wants to save, use the message: "Deseja definir outras transações enviadas para {{destinatario}} como sendo {{categoria}?", if the user agree, save in the sheet
+## After parsing the bill, check in the "Transations" sheet if that is already stored, search by the "ID" column, if it is already there, show the message "Transação já está gravada", and finish the
 

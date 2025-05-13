@@ -12,7 +12,7 @@
       "typeVersion": 1.1,
       "position": [
         -1120,
-        -140
+        -80
       ],
       "id": "16d6d16c-aa0c-4507-aca1-96d6b57a67a2",
       "name": "Telegram Trigger",
@@ -26,42 +26,8 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5c390516-b1b1-4086-bb72-c4276f6d0da1",
-              "leftValue": "={{ $json.message.photo }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -700,
-        -140
-      ],
-      "id": "fd1b6a0d-f065-4bc9-852e-fa11d2833a12",
-      "name": "Has Photo"
-    },
-    {
-      "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "Opa! Favor enviar uma foto da sua: fatura, comprovante de pagamento,etc..",
+        "text": "=Atualmente eu consigo processar comprovantes de PIX e fatura em CSV.",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -69,8 +35,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -500,
-        0
+        -680,
+        120
       ],
       "id": "e2cc9176-52df-4fe3-9984-c7eeb6894ffe",
       "name": "Telegram",
@@ -85,7 +51,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "Analizando a fatura....",
+        "text": "Analizando comprovante de transferência...",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -93,8 +59,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -500,
-        -280
+        -680,
+        -680
       ],
       "id": "9ba11759-6489-4d40-bd99-e2d6c202110e",
       "name": "Telegram1",
@@ -138,13 +104,15 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "timeout": 10000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -180,
-        -280
+        -240,
+        -680
       ],
       "id": "98b60b87-9255-42f5-8870-6f5d65c9bd7a",
       "name": "OCR API",
@@ -160,8 +128,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -340,
-        -280
+        -460,
+        -680
       ],
       "id": "9f8c7e48-b655-449a-b511-a1abb25460b7",
       "name": "Telegram2",
@@ -185,11 +153,11 @@
           "conditions": [
             {
               "id": "5e5c2745-785e-4bdc-ab1f-9135dc16b359",
-              "leftValue": "={{ $json.ErrorMessage }}",
+              "leftValue": "={{$('OCR API').item.json.error }}",
               "rightValue": "",
               "operator": {
-                "type": "array",
-                "operation": "empty",
+                "type": "object",
+                "operation": "notExists",
                 "singleValue": true
               }
             }
@@ -202,7 +170,7 @@
       "typeVersion": 2.2,
       "position": [
         -20,
-        -280
+        -680
       ],
       "id": "64aeb046-0e7a-4743-a2f6-74d7ba13f31e",
       "name": "OCR Success"
@@ -218,8 +186,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        220,
-        -180
+        278,
+        -430
       ],
       "id": "74a8bf19-841b-47bb-a0f7-81b5c55378b5",
       "name": "Telegram3",
@@ -233,162 +201,1516 @@
     },
     {
       "parameters": {
-        "operation": "get",
-        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
-        "simple": false,
-        "options": {
-          "dataPropertyAttachmentsPrefixName": "attachment_",
-          "downloadAttachments": true
-        }
+        "promptType": "define",
+        "text": "=Formatar e resumir o conteúdo da seguinte mensagem, usando o formato especificado nas regras: {{ $json.ParsedResults[0].ParsedText }}\n\n# Regras:\n## Se for uma tranferência PIX: Extrair somente data e hora, valor, destino e chave pix\n## Formato de Saida(JSON - Respeitar formato data/hora fornecido)\n## Details de saída\n### Destinatario: NOME (Note que o nome do destinatário pode estar deparado com quebra de linha, remover a quebra de linha)\n### ID: ID da transação(se houver)\n### Detalhes: Chave PIX (Se houver)\n### Valor (Separador Decimal \",\")\n### Data no formato  ISO 8601\n### Categoria: Inferir a partir o destinatário se for possivel, senão usar \"Não Identificado\". Opções: Saúde, Estética, Alimentação, Supermercado, Combustível, Manutenção Carro, Manutenção Casa, Serviços Domésticos, Vestuário, Lazer",
+        "hasOutputParser": true
       },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
       "position": [
-        -880,
-        -840
+        200,
+        -830
       ],
-      "id": "f5e88407-3b85-4a62-ac7f-b0c9508317f7",
-      "name": "Gmail",
-      "webhookId": "7512fee1-b8a3-41b1-87d7-8341a3b2ea22",
-      "notesInFlow": true,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "ogE7dLrsa30wymy1",
-          "name": "Gmail account"
-        }
-      },
-      "disabled": true,
-      "notes": "Getting details"
+      "id": "6b0bdb05-830e-4498-898c-5c88c458bea2",
+      "name": "Basic LLM Chain"
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
+        "modelName": "models/gemini-2.0-flash-001",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        228,
+        -610
+      ],
+      "id": "12c65768-589a-4152-8217-ec6c4c435e70",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "9RhmBdaqjMmiyd45",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Tipo\": \"PIX|SAQUE\", \n  \"Valor\": \"Valor monetário(Apenas número, formato BRL)\", \n  \"data\": \"05/10/2024 16:35\", \n  \"destinatario\": \"NOME DESTINATARIO\",\n  \"ID\": \"ID da transação\",\n  \"details\": \"Chave pix ou em branco\",\n  \"Categoria\": \"Alimentação\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        348,
+        -610
+      ],
+      "id": "f8d0bf27-5c8e-468e-a198-61881919a1a0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "chatId": "=5031743879",
+        "text": "A transação foi registrada no banco de dados!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2492,
+        -780
+      ],
+      "id": "dbcc9f47-25b3-499e-b5ef-22e7d9774f4c",
+      "name": "Telegram5",
+      "webhookId": "dd341f57-8d9a-422e-a801-3fae0bf1496c",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "=5031743879",
+        "message": "=Qual a categoria para a transação *{{ $('Basic LLM Chain').item.json.output.Tipo }}*, no valor de *R${{ $('Basic LLM Chain').item.json.output.Valor }}* para *{{ $('Basic LLM Chain').item.json.output.destinatario }}*?\n",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
             {
-              "mode": "everyMinute"
+              "fieldLabel": "Qual a categoria?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Supermercado"
+                  },
+                  {
+                    "option": "Combustível"
+                  },
+                  {
+                    "option": "Alimentação"
+                  },
+                  {
+                    "option": "Serviços Domésticos"
+                  },
+                  {
+                    "option": "Manutenção Casa"
+                  },
+                  {
+                    "option": "Manutenção Carro"
+                  },
+                  {
+                    "option": "Lazer"
+                  },
+                  {
+                    "option": "Saúde"
+                  },
+                  {
+                    "option": "Educação"
+                  },
+                  {
+                    "option": "Estética"
+                  },
+                  {
+                    "option": "Investimentos"
+                  },
+                  {
+                    "option": "Vestuário"
+                  }
+                ]
+              },
+              "requiredField": true
             }
           ]
         },
-        "filters": {}
-      },
-      "type": "n8n-nodes-base.gmailTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -1120,
-        -840
-      ],
-      "id": "833241bd-4541-4bc1-982c-1588ba398c19",
-      "name": "Gmail Trigger",
-      "notesInFlow": true,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "ogE7dLrsa30wymy1",
-          "name": "Gmail account"
+        "options": {
+          "appendAttribution": false
         }
       },
-      "disabled": true,
-      "notes": "Email Received"
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1832,
+        -580
+      ],
+      "id": "143bb57a-f732-4c3a-8a48-289d1dc25d76",
+      "name": "Telegram6",
+      "webhookId": "a4ff19b6-4709-46b7-b17b-350d02956eb0",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
     },
     {
       "parameters": {
-        "operation": "pdf",
-        "binaryPropertyName": "attachment_0",
+        "chatId": "=5031743879",
+        "text": "Essa transação já estava registrada!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1172,
+        -480
+      ],
+      "id": "04db8a44-fba1-4eba-9f25-bd63653c1eec",
+      "name": "Telegram4",
+      "webhookId": "dd341f57-8d9a-422e-a801-3fae0bf1496c",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.photo }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "7b9f46cf-5de1-4af2-a1bf-059f00adc5af"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ce8e5b21-a3b7-4e62-a7c6-350dab27f795",
+                    "leftValue": "={{ $json.message.document.mime_type }}",
+                    "rightValue": "text/comma-separated-values",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "95330cc9-d085-4bb7-a326-114ff04b7ae5",
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 2
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -900,
+        -80
+      ],
+      "id": "e8da76a3-0309-4655-8f48-61631bf51f1f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Analizando a fatura CSV....",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        -80
+      ],
+      "id": "760ec0f9-ca9b-4b51-9d9a-452e76ad1c35",
+      "name": "Telegram7",
+      "webhookId": "8789d64f-90ca-4fb4-9f48-f5c36d4453f7",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Switch').item.json.message.document.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        -105
+      ],
+      "id": "15c7aa43-0bca-4ace-8dc1-98143fe3dee3",
+      "name": "Telegram8",
+      "webhookId": "136b8ae3-b93e-41ac-a572-433cdd4d6a93",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Loop Over Items').item.json.date }}\n{{ $('Loop Over Items').item.json.title }}\n{{ $('Loop Over Items').item.json.amount }}",
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\"Tipo\": \"Crédito\", \"Valor\": \"54,38\", \"data\": \"2024-02-23 05:04:43\", \"destinatario\": \"Excelencia Centro Auto\", \"ID\": \"N/A\", \"categoria\": \"Manutenção Carro\", \"detalhes\": \"Parcela 6/8\"}",
+        "options": {
+          "systemPromptTemplate": "=Transformar o lançamento de fatura de cartão de crédito, seguindo as regras abaixo, e o modelo fornecido.\n\n# Regras: Gerar um array de objetos JSON, onde cada elemento representa uma transação no cartão de crédito\n## Ignorar lançamentos negativos\n## Formato de Saida(JSON - Respeitar formato data/hora fornecido)\n## Details de saída\n### Destinatario: Descrição do lançamento\n### ID: Concatenação de: Destinatario-Valor-Data\n### Tipo: Crédito(Valor Fixo)\n### Detalhes: Informação de parcelamento. Exemplos: Parcela 2/7, Parcela 3/5\n### Valor (Separador Decimal \",\")\n### Data no formato ISO 8601 (Exemplo: 05/10/2024 16:35)\n### Categoria: Inferir pela descrição, podendo ser: Saúde, Estética, Alimentação, Supermercado, Combustível, Manutenção Carro, Manutenção Casa, Serviços Domésticos, Vestuário, Lazer, Não Identificado"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        800,
+        60
+      ],
+      "id": "e31b62fd-8edb-49c6-952c-1df6742726d4",
+      "name": "Information Extractor",
+      "executeOnce": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite-001",
+        "options": {
+          "temperature": 0.2,
+          "topK": 40
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        884,
+        290
+      ],
+      "id": "4f924e56-da09-433b-8d28-a5a9119b9395",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "9RhmBdaqjMmiyd45",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $('Information Extractor').item.json.output.data }}",
+            "Amount": "={{ $('Information Extractor').item.json.output.Valor }}",
+            "Target": "={{ $('Information Extractor').item.json.output.destinatario }}",
+            "ID": "={{ $('Information Extractor').item.json.output.ID }}",
+            "Details": "={{ $('Information Extractor').item.json.output.detalhes }}",
+            "Category": "={{ $('Information Extractor').item.json.output.categoria }}",
+            " Trx Type": "Credit"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Trx Type",
+              "displayName": " Trx Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
         "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        120
+      ],
+      "id": "b293ce3a-b5b1-4ac7-a71d-d4c49b097dbf",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "=data",
+        "options": {
+          "rawData": true
+        }
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -600,
-        -840
+        278,
+        -105
       ],
-      "id": "6f71e418-8b9e-4e15-a5fc-a8520c8870a7",
-      "name": "Extract from File",
-      "disabled": true
+      "id": "eb65415f-6540-45d6-a426-36ea6bdb19a0",
+      "name": "Extract from File1"
     },
     {
       "parameters": {
-        "workflowId": {
+        "batchSize": 50,
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        576,
+        -105
+      ],
+      "id": "455b7c0d-73b6-4c60-8641-9872c0e3195f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "documentId": {
           "__rl": true,
-          "value": "mjUGeMpQCtOlwNd3",
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
           "mode": "list",
-          "cachedResultName": "Save Tx"
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
         },
-        "workflowInputs": {
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $json.output.ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        576,
+        -730
+      ],
+      "id": "25502912-29f4-49f7-810f-e1ab9aa1cd76",
+      "name": "Find Trx in DB",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=0"
+        },
+        "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "bill": "={{ $json.text }}"
+            "Date": "={{ $('Basic LLM Chain').item.json.output.data }}",
+            "Amount": "={{ $('Basic LLM Chain').item.json.output.Valor }}",
+            "Target": "={{ $('Basic LLM Chain').item.json.output.destinatario }}",
+            " Trx Type": "={{ $('Basic LLM Chain').item.json.output.Tipo }}",
+            "ID": "={{ $('Basic LLM Chain').item.json.output.ID }}",
+            "Details": "={{  ($('Basic LLM Chain').item.json.output.details)}}",
+            "Category": "={{  ($('Basic LLM Chain').item.json.output.Categoria)}}"
           },
           "matchingColumns": [
-            "bill"
+            "ID"
           ],
           "schema": [
             {
-              "id": "bill",
-              "displayName": "bill",
+              "id": "Date",
+              "displayName": "Date",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "canBeUsedToMatch": true,
               "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Trx Type",
+              "displayName": " Trx Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2272,
+        -980
+      ],
+      "id": "f588b50d-f349-4a62-84f1-830ca1f0d32c",
+      "name": "Save Tx",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1832823336,
+          "mode": "list",
+          "cachedResultName": "Category Mapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=1832823336"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Target": "={{ $('Basic LLM Chain').item.json.output.destinatario }}"
+          },
+          "matchingColumns": [
+            "Target"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Trx Type",
+              "displayName": " Trx Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1120,
+        605
+      ],
+      "id": "10f796fc-3c07-45c5-b364-d156a0c66dbe",
+      "name": "Save Tx1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad87ee63-ac2d-4783-97a6-9ac0ce63bb92",
+              "leftValue": "={{ $json.row_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        874,
+        -730
+      ],
+      "id": "8d4755ff-48fc-424e-893a-8e650d72e47a",
+      "name": "Should save Tr"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad87ee63-ac2d-4783-97a6-9ac0ce63bb92",
+              "leftValue": "={{ $('Basic LLM Chain').item.json.output.Categoria }}",
+              "rightValue": "Não Identificado",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1172,
+        -780
+      ],
+      "id": "36d1040b-e7f6-4d14-8d4f-fd2f41114270",
+      "name": "Is Category Identified"
+    },
+    {
+      "parameters": {
+        "chatId": "=5031743879",
+        "text": "=Categoria identificada automaticamente: {{ $('Basic LLM Chain').item.json.output.Categoria }} ...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2052,
+        -980
+      ],
+      "id": "9efedb5a-5381-48d0-bbd7-2a6d817022eb",
+      "name": "Telegram9",
+      "webhookId": "dd341f57-8d9a-422e-a801-3fae0bf1496c",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1832823336,
+          "mode": "list",
+          "cachedResultName": "Category Mapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=1832823336"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Target",
+              "lookupValue": "={{ $('Basic LLM Chain').item.json.output.destinatario }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1392,
+        -680
+      ],
+      "id": "486bbf0e-edc8-4eee-9fee-0cb7bb45bc7f",
+      "name": "Find Category in DB",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad87ee63-ac2d-4783-97a6-9ac0ce63bb92",
+              "leftValue": "={{ $('Find Category in DB').item.json }}",
+              "rightValue": "Não Identificado",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1612,
+        -680
+      ],
+      "id": "eaecee4b-deb7-455e-ab1a-0cc91b5e1f4b",
+      "name": "Is Category In DB"
+    },
+    {
+      "parameters": {
+        "chatId": "=5031743879",
+        "text": "=Categoria registrada no banco de dados: {{ $json.Category }} ...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2052,
+        -780
+      ],
+      "id": "c13e7b22-2b07-44a3-9ddf-7c8b0d0f10fc",
+      "name": "Telegram10",
+      "webhookId": "dd341f57-8d9a-422e-a801-3fae0bf1496c",
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1832823336,
+          "mode": "list",
+          "cachedResultName": "Category Mapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=1832823336"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Target": "={{ $('Basic LLM Chain').item.json.output.destinatario }}",
+            "Category": "={{ $json.data['Qual a categoria?'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2052,
+        -580
+      ],
+      "id": "6541ff68-1e70-4aa6-b5c2-3a188e1c991f",
+      "name": "Save Category",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $('Basic LLM Chain').item.json.output.data }}",
+            "Amount": "={{ $('Basic LLM Chain').item.json.output.Valor }}",
+            "Target": "={{ $('Basic LLM Chain').item.json.output.destinatario }}",
+            " Trx Type": "={{ $('Basic LLM Chain').item.json.output.Tipo }}",
+            "ID": "={{ $('Basic LLM Chain').item.json.output.ID }}",
+            "Details": "={{ $('Basic LLM Chain').item.json.output.details }}",
+            "Category": "={{ $('Is Category In DB').item.json.Category }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Trx Type",
+              "displayName": " Trx Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2272,
+        -780
+      ],
+      "id": "a2e7ddc6-ea17-43f9-85a8-3a5811e28a3d",
+      "name": "Save Tx2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Transactions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $('Basic LLM Chain').item.json.output.data }}",
+            "Amount": "={{ $('Basic LLM Chain').item.json.output.Valor }}",
+            "Target": "={{ $('Basic LLM Chain').item.json.output.destinatario }}",
+            " Trx Type": "={{ $('Basic LLM Chain').item.json.output.Tipo }}",
+            "ID": "={{ $('Basic LLM Chain').item.json.output.ID }}",
+            "Details": "={{ $('Basic LLM Chain').item.json.output.details }}",
+            "Category": "={{ $('Telegram6').item.json.data['Qual a categoria?'] }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Target",
+              "displayName": "Target",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Trx Type",
+              "displayName": " Trx Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2272,
+        -580
+      ],
+      "id": "edc028a2-c786-4c41-bb7f-98b37d0aab0a",
+      "name": "Save Tx3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        320
+      ],
+      "id": "ef2e4efe-3e15-401c-ba4f-d684fb882d13",
+      "name": "Wait",
+      "webhookId": "7dce2768-fb5e-4b06-9592-f58233cbd9fd"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "=Fatura regsitrada com sucesso, {{ $('Extract from File1').all().length }} despesas registradas no banco de dados!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        874,
+        -430
+      ],
+      "id": "a9c9e9b2-69ad-4fbb-bc65-48f2068e6845",
+      "name": "Telegram11",
+      "webhookId": "ea7300e4-dfc8-4e9c-8856-76d3dc9a9a3f",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Processando próxima página de {{ $('Loop Over Items').params.batchSize}} despesas...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        874,
+        -230
+      ],
+      "id": "9d1761f8-40b0-4c96-8e91-9a2e725e27df",
+      "name": "Telegram12",
+      "webhookId": "ea7300e4-dfc8-4e9c-8856-76d3dc9a9a3f",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $('Loop Over Items').params.batchSize}} despesas processadas, gravando no banco de dados...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1172,
+        -280
+      ],
+      "id": "56db007e-a175-46f2-97bb-2b14f3dd7020",
+      "name": "Telegram13",
+      "webhookId": "ea7300e4-dfc8-4e9c-8856-76d3dc9a9a3f",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1297151847,
+          "mode": "list",
+          "cachedResultName": "Monthly bill credit",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=1297151847"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "FileName",
+              "lookupValue": "={{ $('Telegram Trigger').item.json.message.document.file_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -460,
+        -80
+      ],
+      "id": "643de2a6-924c-4487-8126-fbef0e07a9ce",
+      "name": "Check processed bills",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad87ee63-ac2d-4783-97a6-9ac0ce63bb92",
+              "leftValue": "={{ $json.row_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "43f667f4-3929-4c48-a244-8c68a8442fd4",
+      "name": "Should  process bill"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=A fatura {{ $('Telegram Trigger').item.json.message.document.file_name.replaceAll(\"_\", \"\\\\_\")}} já estava registrada, nada a fazer.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        95
+      ],
+      "id": "519b52fa-dbc0-4de9-9630-8d9416ec9a5a",
+      "name": "Telegram14",
+      "webhookId": "ea7300e4-dfc8-4e9c-8856-76d3dc9a9a3f",
+      "executeOnce": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "uj26056TWmv7nUqu",
+          "name": "Telegram Bill Assistant"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1297151847,
+          "mode": "list",
+          "cachedResultName": "Monthly bill credit",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kTpTw9ECv3D-30kcCslAgMDCm88_8g3cvZd_uAQ0ihs/edit#gid=1297151847"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "FileName": "={{ $('Telegram Trigger').item.json.message.document.file_name }}"
+          },
+          "matchingColumns": [
+            "FileName"
+          ],
+          "schema": [
+            {
+              "id": "FileName",
+              "displayName": "FileName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
               "removed": false
             }
           ],
           "attemptToConvertTypes": false,
-          "convertFieldsToString": true
+          "convertFieldsToString": false
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
-        -380,
-        -840
+        -20,
+        -430
       ],
-      "id": "77698b73-93a9-4fb4-b261-79b13a1d8fdd",
-      "name": "Execute Workflow",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "mjUGeMpQCtOlwNd3",
-          "mode": "list",
-          "cachedResultName": "Save Tx"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "bill": "={{ $('OCR Success').item.json.ParsedResults[0].ParsedText }}"
-          },
-          "matchingColumns": [
-            "bill"
-          ],
-          "schema": [
-            {
-              "id": "bill",
-              "displayName": "bill",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        240,
-        -400
-      ],
-      "id": "cf8eb56a-55a5-4c33-b22f-a466c361d3dc",
-      "name": "Execute Workflow1"
+      "id": "e4fd49e1-8d37-46b8-af2c-9fd9284d122d",
+      "name": "Save bill",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Zie0Hqvx45V9xm2C",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -397,25 +1719,7 @@
       "main": [
         [
           {
-            "node": "Has Photo",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Has Photo": {
-      "main": [
-        [
-          {
-            "node": "Telegram1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Telegram",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -459,7 +1763,7 @@
       "main": [
         [
           {
-            "node": "Execute Workflow1",
+            "node": "Basic LLM Chain",
             "type": "main",
             "index": 0
           }
@@ -473,33 +1777,361 @@
         ]
       ]
     },
-    "Gmail Trigger": {
+    "Basic LLM Chain": {
       "main": [
         [
           {
-            "node": "Gmail",
+            "node": "Find Trx in DB",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gmail": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram6": {
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "Save Category",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extract from File": {
+    "Switch": {
       "main": [
         [
           {
-            "node": "Execute Workflow",
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram7": {
+      "main": [
+        [
+          {
+            "node": "Check processed bills",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram8": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Telegram13",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Telegram11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram12",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Trx in DB": {
+      "main": [
+        [
+          {
+            "node": "Should save Tr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Tx": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should save Tr": {
+      "main": [
+        [
+          {
+            "node": "Is Category Identified",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Category Identified": {
+      "main": [
+        [
+          {
+            "node": "Telegram9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Category in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram9": {
+      "main": [
+        [
+          {
+            "node": "Save Tx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Category in DB": {
+      "main": [
+        [
+          {
+            "node": "Is Category In DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Category In DB": {
+      "main": [
+        [
+          {
+            "node": "Telegram10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram10": {
+      "main": [
+        [
+          {
+            "node": "Save Tx2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Category": {
+      "main": [
+        [
+          {
+            "node": "Save Tx3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Tx2": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Tx3": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram12": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram13": {
+      "main": [
+        []
+      ]
+    },
+    "Check processed bills": {
+      "main": [
+        [
+          {
+            "node": "Should  process bill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should  process bill": {
+      "main": [
+        [
+          {
+            "node": "Telegram8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save bill",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram14",
             "type": "main",
             "index": 0
           }
@@ -511,7 +2143,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e3c4baca-496a-4256-9c5a-e38ce9781f01",
+  "versionId": "e98530c9-98f0-43aa-848d-fa12348e9071",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "069516fa408bfca5c9bbb9ce2450267e481dff6becd936f8d07702b857f9f249"
